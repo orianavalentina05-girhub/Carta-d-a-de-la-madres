@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Yoli y JB</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #fff1f2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+        .font-cursive { font-family: 'Dancing Script', cursive; }
+
+        .envelope-wrapper {
+            position: relative;
+            cursor: pointer;
+            width: 300px;
+            height: 200px;
+        }
+
+        .envelope {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: #f43f5e;
+            border-radius: 0 0 8px 8px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* Solapa superior */
+        .flap {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 110px solid #e11d48;
+            transform-origin: top;
+            transition: transform 0.5s ease;
+            z-index: 4; /* Encima de todo al inicio */
+        }
+
+        /* Parte frontal del sobre (el triángulo de abajo) */
+        .envelope::before {
+            content: "";
+            position: absolute;
+            z-index: 3; /* Encima de la carta cuando está guardada */
+            border-top: 100px solid transparent;
+            border-right: 150px solid #fb7185;
+            border-bottom: 100px solid #fb7185;
+            border-left: 150px solid #f43f5e;
+            border-radius: 0 0 8px 8px;
+            bottom: 0;
+        }
+
+        /* La Carta */
+        .letter {
+            position: absolute;
+            bottom: 5px;
+            left: 10px;
+            width: 280px;
+            height: 180px;
+            background: white;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275), z-index 0.1s;
+            z-index: 2; /* Debajo de la solapa y frente */
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Estados al abrir */
+        .envelope-wrapper.open .flap {
+            transform: rotateX(180deg);
+            z-index: 1; /* Pasa atrás */
+        }
+
+        .envelope-wrapper.open .letter {
+            transform: translateY(-130px);
+            z-index: 10; /* Subre al frente de todo para poder hacer clic */
+        }
+
+        /* Botón oculto */
+        #btn-ver-regalo {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.5s ease-out;
+            pointer-events: none;
+        }
+
+        .show-button #btn-ver-regalo {
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto;
+        }
+
+        #ticket-screen {
+            display: none;
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SOBRE -->
+    <div id="envelope-scene" class="flex flex-col items-center">
+        <p id="instruction" class="mb-12 text-rose-400 font-semibold animate-bounce tracking-widest text-sm uppercase">Toca el sobre</p>
+        
+        <div id="wrapper" class="envelope-wrapper" onclick="openEnvelope()">
+            <div class="envelope">
+                <div class="flap"></div>
+                <div class="letter">
+                    <h2 class="font-cursive text-2xl text-rose-600 mt-2">¡Feliz día, Yoli y JB!</h2>
+                    <p class="text-gray-400 text-[10px] mt-2 uppercase tracking-[0.2em]">Para ustedes</p>
+                    
+                    <button id="btn-ver-regalo" onclick="showTicket(event)" class="mt-6 bg-rose-600 text-white text-[11px] font-bold py-3 px-6 rounded-xl hover:bg-rose-700 transition shadow-lg tracking-widest uppercase">
+                        VER REGALO
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TICKET -->
+    <div id="ticket-screen" class="flex flex-col items-center w-full px-4 max-w-sm mx-auto">
+        <div class="bg-white rounded-[2rem] overflow-hidden shadow-2xl w-full">
+            <div class="bg-rose-600 p-6 text-white text-center">
+                <p class="text-[9px] tracking-[0.4em] uppercase opacity-70 mb-1">Pase Exclusivo</p>
+                <h3 class="text-2xl font-bold tracking-tight">GEORGE HARRIS</h3>
+            </div>
+
+            <div class="p-8 space-y-6">
+                <div class="flex justify-between border-b border-gray-100 pb-4">
+                    <div>
+                        <p class="text-[9px] text-gray-400 uppercase font-bold">Fecha</p>
+                        <p class="font-semibold text-gray-700">7 de Mayo</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] text-gray-400 uppercase font-bold">Lugar</p>
+                        <p class="font-semibold text-gray-700">Flamingo Theater Bar</p>
+                    </div>
+                </div>
+
+                <div class="flex justify-between border-b border-gray-100 pb-4">
+                    <div>
+                        <p class="text-[9px] text-gray-400 uppercase font-bold">Puertas / Show</p>
+                        <p class="font-semibold text-gray-700">8:30 PM / 10:00 PM</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-[9px] text-gray-400 uppercase font-bold">Mesa</p>
+                        <p class="font-semibold text-gray-700">73 (Row 7)</p>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <a href="https://drive.google.com/file/d/1eqp3dGqWuOTLptkwYqz_jNOpPdBMQo4o/view?usp=drivesdk" 
+                       target="_blank" 
+                       class="flex items-center justify-center w-full bg-black text-white font-bold py-4 rounded-2xl shadow-xl hover:bg-gray-800 transition active:scale-95 space-x-3">
+                        <svg class="w-5 h-5 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                        </svg>
+                        <span>VER ENTRADAS</span>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 p-4 text-center">
+                <p class="text-[10px] text-gray-400 font-medium">¡Disfruten una noche increíble!</p>
+            </div>
+        </div>
+        
+        <button onclick="window.location.reload()" class="mt-8 text-rose-300 text-[10px] hover:text-rose-500 transition uppercase tracking-widest">
+            ← Cerrar sobre
+        </button>
+    </div>
+
+    <script>
+        let isOpen = false;
+
+        function openEnvelope() {
+            if (isOpen) return;
+            isOpen = true;
+
+            const wrapper = document.getElementById('wrapper');
+            const instruction = document.getElementById('instruction');
+
+            // Abrir y subir
+            wrapper.classList.add('open');
+            instruction.style.opacity = '0';
+
+            // El botón aparece después de que la carta sube
+            setTimeout(() => {
+                wrapper.classList.add('show-button');
+            }, 850);
+        }
+
+        function showTicket(event) {
+            // Detener que el clic pase al sobre
+            event.stopPropagation();
+            
+            const envelopeScene = document.getElementById('envelope-scene');
+            const ticketScreen = document.getElementById('ticket-screen');
+
+            envelopeScene.style.opacity = '0';
+            envelopeScene.style.transition = 'opacity 0.4s ease';
+            
+            setTimeout(() => {
+                envelopeScene.style.display = 'none';
+                ticketScreen.style.display = 'flex';
+            }, 400);
+        }
+    </script>
+</body>
+</html>
+
+```
